@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Employee List</title>
+<link href="listTable.css" rel="stylesheet" />
+
+</head>
+<body>
+	<header-component></header-component>
+	
+	<h3 id="topTitle" class="ctr">List</h3>
+	<div  class="ctr">
+	<table id="pageTable" >
+		<thead>
+			<tr>
+				<th>...</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="4">Loading...</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+	
+	<confirmer-component></confirmer-component>
+	
+	<notifier-component></notifier-component>
+	
+	<pager-component></pager-component>
+
+	<footer-component></footer-component>
+	
+</body>
+
+
+<script src="components/header.js" type="text/javascript" defer></script>
+<script src="components/confirmer.js" type="text/javascript" defer></script>
+<script src="components/notifier.js" type="text/javascript" defer></script>
+<script src="components/pager.js" type="text/javascript" defer></script>
+<script src="components/footer.js" type="text/javascript" defer></script>
+<script src="listUtils.js" type="text/javascript"></script>
+	
+<script>
+
+// call refreshPage in listUtils.js 
+// Note: addEventListener will not work if defer is used on listUtils.js
+document.addEventListener('DOMContentLoaded', refreshPage, false);
+//
+const restBaseUrl = window.location.origin + '/html5-jakarta-1.0/api/customers/';
+
+const topTitle = 'Customer List';
+const colTitles = ['Id', 'Last name', 'First name', 'Phone', 'Email', 
+	'Address line 1', 'Address line 2', 'City', 'State', 'Postal code', 'Edit', 'Delete'];
+
+function renderTableData(pageList) {
+	  try {
+	    // Select the table tbody
+	    let tbodyPart = document.querySelector('#pageTable tbody');
+		// create html
+		// must use single quotes around onclick function
+		let rowIndex = 1;
+		let result = '';
+		pageList.forEach(e => {
+			// note: ej will contain double quotes
+		   let ej = JSON.stringify(e);
+		// Note: ??= null - sets value to null if undefined
+		// result - must use backtick 
+		   result += `<tr>
+		   <td>${e.id}</td>
+		   <td>${e.lastName}</td>
+		   <td>${e.firstName ?? null}</td>
+		   <td>${e.phone ?? null}</td>
+		   <td>${e.email}</td>
+		   <td>${e.addressLine1}</td>
+		   <td>${e.addressLine2 ?? null}</td>
+		   <td>${e.city}</td>
+		   <td>${e.state}</td>
+		   <td>${e.postalCode}</td>
+		   <td>
+		   <input type="button" id="editButton"+${rowIndex} value="Edit" class="edit" onclick='editRow(${rowIndex}, ${ej} )'>
+		   </td>
+		   <td>
+		   <input type="button" id="deleteItem"+${rowIndex} value="Delete" class="delete" onclick='conformDeleteRow(${rowIndex}, ${ej} )'>
+		   
+		   </td>
+		   </tr>`;
+		   rowIndex++;
+		});
+		tbodyPart.innerHTML = result;
+	  } catch (ex) {
+	      console.error(ex);
+	  }
+}
+
+
+function editRow(rowIndex, ej)
+{
+ console.log({'edit ej': ej});
+ let ejj = JSON.stringify(ej);
+ console.log({'edit ejj': ejj});
+	 
+ localStorage.setItem('form-data', ejj);
+ 
+ window.location.href = "customerForm.html";
+}
+
+
+
+async function conformDeleteRow(rowIndex, ej)
+{
+	// ej is javascript object
+	console.log({'delete ej': ej});
+	 let ejj = JSON.stringify(ej);
+	 // ejj is json object
+	 console.log({'delete ejj': ejj});
+	console.log('call confirmDelete');
+	//
+	const title = 'Confirm Delete';
+	setConfirmerTitle(title)
+	//
+	let suffix = 'id: ' + ej.id + ', name: ' + ej.lastName + ', ' + ej.firstName + '?';
+	console.log({'delete emp suffix': suffix});
+	let msg = 'Are you sure you want to delete ' + suffix;
+	setConfirmerMessage(msg);
+	//
+	let resp = await confirmAction();
+	//
+	console.log({'confirmDelete resp': resp});
+
+	if(resp == 'yes ok'){
+		console.log('confirmDelete with yes');
+		//
+		let id = ej.id;
+		let confirm = await deleteRefresh(id);
+		//
+		console.log({'deleteRresponse': deleteResponse});
+		// refresh list
+//		const refreshResponse = await refreshPage();
+//		console.log({'refreshResponse': refreshResponse});
+	} else if (resp == 'no cancel'){
+		console.log('confirmDelete with no');
+		// do nothing
+	} else {
+		console.log('confirmDelete with other');
+		// do nothing
+	}
+}
+
+// begin pager functions 
+
+// 'custom:updatePage' event from pager.js sendEvent
+// call pageHandler in listUtils.js
+document.addEventListener('custom:updatePage', pageHandler);
+
+// end pager functions
+</script>
+
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Form</title>
+<link href="entryForm.css" rel="stylesheet" />
+
+</head>
+<body>
+	<header-component></header-component>
+	<form id="employeeform" class="form-a" method="POST">
+		<div class="banner-a, center">
+			<h3>Employee Form</h3>
+		</div>
+
+		<fieldset class="grid-a">
+			<label for="id">Id<span class="required">*</span></label> 
+			<input id="id" type="tel" name="id" required/> 
+						
+			<label	for="firstName">First Name</label> 
+			<input id="firstName" type="text" name="firstName" /> 
+			
+			<label for="lastName">Last Name<span class="required">*</span></label> 
+			<input	id="lastName" type="text" name="lastName" required /> 
+			
+			<label	for="email">Email address<span class="required">*</span></label> 
+			<input id="email" type="email" name="email" required /> 
+			
+			<label for="phone">Phone</label> 
+			<input id="phone" type="tel" name="phone" /> 
+			
+			<label for="reportsTo">Report to<span class="required">*</span></label> 
+			<input id="reportsTo" type="tel" name="reportsTo" required /> 
+			
+			<label for="jobTitle">Job title<span class="required">*</span></label> 
+			<select id="jobTitle" name="jobTitle" required>
+				<option value="">--Select job title--</option>
+			</select> 
+			
+			<label for="addr1">Address line 1<span class="required">*</span></label> 
+			<input id="addr1"  type="text" name="addressLine1" required /> 
+			
+			<label for="addr2">Address line 2</label> 
+			<input id="addr2" type="text" name="addressLine2" /> 
+			
+			<label	for="city">City<span class="required">*</span></label> 
+			<input id="city" type="text" name="city" />
+
+			<label for="state">Choose a state:<span class="required">*</span></label> 
+			<select id="state" name="state"	required>
+				<option value="">--Select state--</option>
+			</select> 
+			
+			<label for="postalCode">Postal code<span class="required">*</span></label> 
+			<input id="postalCode"	type="tel" name="postalCode" required/>
+
+		</fieldset>
+
+		<div class="center">
+			<button type="submit" class="btn" style="font-size: 16px;">Submit</button>
+			<button type="reset" class="btn" style="font-size: 16px;" >Reset</button>
+		</div>
+	</form>
+	<notifier-component></notifier-component>
+	<footer-component></footer-component>
+</body>
+
+<script type="text/javascript" src="multiLoad.js"></script>
+<script type="text/javascript" src="statesList.js"></script>
+<script type="text/javascript" src="formUtils.js"></script>
+<script src="components/header.js" type="text/javascript" defer></script>
+<script src="components/notifier.js" type="text/javascript" defer></script>
+<script src="components/footer.js" type="text/javascript" defer></script>
+
+<script>
+
+const restBaseUrl = window.location.origin +  '/html5-jakarta-1.0/api/employees';
+
+
+function createJobTitleList()
+    {
+    	const jobTitles = ['President', 'VP Software', 'VP Hardware', 'SW Engineer', 'HW Engineer'];
+    	const select = document.getElementById('jobTitle');
+    	for (const title of jobTitles) {
+    		const option = document.createElement( 'option' );
+            option.value = title;
+            option.text = title;
+            select.appendChild( option );
+    	}
+    }
+
+addLoadEvent(createJobTitleList);
+addLoadEvent(createStatesList);
+addLoadEvent(initForm);
+
+
+// ----------------------------
+
+/**
+ * Function populating form (empty for Add, filled for Update)
+ *
+ */
+function initForm()
+{
+  
+  // localStorage item 'form-data' is null for Add, or filled with data for Update
+  // object data contains all fields of form
+  let data = JSON.parse(localStorage.getItem('form-data'));
+  console.log({'populate form data': data});
+  if(data){
+	  // populate form for update
+     document.getElementById('id').value = data.id;
+  	 // ??= '' - sets value to empty if undefined
+     document.getElementById('firstName').value = data.firstName ??= '';
+     document.getElementById('lastName').value = data.lastName;
+     document.getElementById('email').value = data.email;
+     document.getElementById('phone').value = data.phone ??= '';
+     document.getElementById('reportsTo').value = data.reportsTo;
+     document.getElementById('jobTitle').value = data.jobTitle;
+     document.getElementById('addr1').value = data.addressLine1;
+     document.getElementById('addr2').value = data.addressLine2 ??= '';
+     document.getElementById('city').value = data.city;
+     document.getElementById('state').value = data.state;
+     document.getElementById('postalCode').value = data.postalCode;
+     //
+    prepUpdate("employeeList.html");
+ 	//
+     localStorage.removeItem('form-data');
+  }
+ }
+
+
+//
+// script loads after form so that querySelector("#employeeform") works
+//
+// in querySelector, must use # for id ref
+ const dataForm = document.querySelector("#employeeform");
+ if (dataForm != null) {
+	 // call handleFormSubmit in formUtils.js 
+     dataForm.addEventListener("submit", handleFormSubmit);
+ } else {
+     alert('dataForm is null, cannot submit ');
+ }
+
+
+
+    </script>
+
+</html>

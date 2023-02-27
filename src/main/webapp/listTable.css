@@ -1,0 +1,25 @@
+.ctr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+table {
+  border-collapse: collapse;
+  padding: 15px;
+}
+th {
+	background-color: #FFF8DC;
+	white-space: pre-wrap;
+}
+td, th {
+	/* top | right | bottom | left */
+	padding: 6px 6px 0 4px;
+	text-align: left;
+}
+table,  th,  td {
+        border: 1px solid #c1c1c1;
+        border-collapse: collapse;
+}
+#wrapit {
+  white-space: pre-line;
+}

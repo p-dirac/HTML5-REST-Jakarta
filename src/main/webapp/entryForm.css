@@ -1,0 +1,61 @@
+            .container{
+                margin: 0 auto;
+                width: 100%;
+            }
+            .center {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                /* height: 10px; */
+                /* border: 1px solid green; */
+            }            
+            .banner-a{
+                grid-column: 2;
+                justify-self: start;
+            }
+            .form-a {
+                background: #f9f9f9;
+                border: 1px solid #c1c1c1;
+                margin-top: 0.4rem;
+                margin-bottom: 0.4rem;
+                width: 50%;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0.5em;
+            }
+            label {
+                text-align: right;
+                /* top | right | bottom | left */
+                padding: 0.2em 0.5em 0.2em 0;
+            }
+            .btn {
+                text-align: center;
+                /* top | right | bottom | left */
+                margin: 4px 10px 4px 10px;
+            }
+
+            input {
+                padding: 0.4em;
+                margin-bottom: 0.1rem;
+            }
+            input:focus {
+                outline: 3px solid gold;
+            }
+            input[readonly]{
+            	background: #f5f5f5;
+            }
+            select {
+                padding: 0.4em;
+                margin-bottom: 0.1rem;
+            }
+			.required {
+			  color: red;
+			}
+
+            .grid-a {
+                display: grid;
+                border: none;
+                grid-template-columns: 0.4fr 0.4fr;
+                grid-row-gap: 16px;
+                grid-column-gap: 10px;
+            }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sample REST Demonstration</title>
+<!--  <meta http-equiv="Refresh" content="0; URL=index.html"> -->
+<style>
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.tx-center {
+	text-align: center;
+}
+
+
+.spc-10 {
+        height: 10px;
+}
+.spc-20 {
+        height: 20px;
+}
+
+</style>
+</head>
+<body>
+	<header-component></header-component>
+	<div class="spc-10"></div>
+	
+	<main class="center">
+		<div>
+			<p style="width: 500px; font-size: 20px;">
+			Welcome to a Sample REST Demonstration using Jakarta EE
+		   </p>
+
+			<p style="width: 500px; font-size: 20px;">
+			We use HTML5, CSS, and javascript on the front end to display browser web pages. For interfacing
+			with the server, javascript does a fetch call with json data. 
+			</p>
+			
+			<p style="width: 500px; font-size: 20px;">
+			The back end server is apache tomee plus with support for Jakarta EE. REST services are defined 
+			to receive json requests, connect to the Mysql database, and send json responses back to the web
+		    page.
+			</p>
+			
+			<p style="width: 500px; font-size: 20px;">
+			The Mysql database contains two sample tables which are used to demonstrate basic CRUD operations,
+			as well as the JOIN functions.
+			</p>
+		</div>
+	</main>
+
+	<div class="spc-20"></div>
+	<footer-component></footer-component>
+</body>
+<script src="components/header.js" type="text/javascript" defer></script>
+<script src="components/footer.js" type="text/javascript" defer></script>
+
+</html>

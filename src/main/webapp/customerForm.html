@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Form</title>
+<link href="entryForm.css" rel="stylesheet" />
+
+</head>
+
+<body>
+	<header-component></header-component>
+
+	<form id="customerform" class="form-a" method="POST">
+		<div class="banner-a, center">
+			<h3>Customer Form</h3>
+		</div>
+		<fieldset class="grid-a">
+			<label for="id">Id</label> 
+			<input id="id" type="tel" name="id"	readonly /> 
+			
+			<label for="fName">First Name</label> 
+			<input id="fName" type="text" name="firstName" /> 
+				
+			<label for="lName">Last	Name<span class="required">*</span></label> 
+			<input id="lName" type="text" name="lastName" required /> 
+			
+			<label	for="email">Email address<span class="required">*</span></label> 
+			<input id="email" type="email" name="email" required /> 
+			
+			<label for="phone">Phone</label>
+			<input id="phone" type="tel" name="phone" /> 
+			
+			<label for="addr1">Address line 1<span class="required">*</span></label> 
+			<input id="addr1" type="text" name="addressLine1" required /> 
+			
+			<label for="addr2">Address line 2</label> 
+			<input id="addr2" type="text" name="addressLine2" /> 
+				
+			<label for="city">City<span class="required">*</span></label> 
+			<input	id="city" type="text" name="city" required/> 
+			
+			<label for="state">Choose a state:<span class="required">*</span></label> 
+			<select name="state" id="state" required>
+				<option value="">--Select state--</option>
+			</select>
+			 
+			<label for="postalCode">Postal code<span class="required">*</span></label> 
+			<input id="postalCode" type="tel" name="postalCode" required/>
+
+		</fieldset>
+
+
+		<div class="center">
+			<button type="submit" class="btn" style="font-size: 16px;">Submit</button>
+			<button type="reset" class="btn" style="font-size: 16px;">Reset</button>
+		</div>
+	</form>
+	<notifier-component></notifier-component>
+	<footer-component></footer-component>
+</body>
+
+<script type="text/javascript" src="multiLoad.js"></script>
+<script type="text/javascript" src="statesList.js"></script>
+<script type="text/javascript" src="formUtils.js"></script>
+<script src="components/header.js" type="text/javascript" defer></script>
+<script src="components/notifier.js" type="text/javascript" defer></script>
+<script src="components/footer.js" type="text/javascript" defer></script>
+
+
+<script>
+	addLoadEvent(createStatesList);
+	addLoadEvent(initForm);
+
+	//----------------------------
+
+	const restBaseUrl = window.location.origin
+			+ '/html5-jakarta-1.0/api/customers/';
+
+	// ----------------------------
+
+	function initForm() {
+
+		// localStorage item 'form-data' is null for Add, or filled with data for Update
+		// object data contains all fields of form
+		let data = JSON.parse(localStorage.getItem('form-data'));
+		//
+		if (data) {
+			console.log({'populate form data' : data});
+			document.getElementById('id').value = data.id;
+			// ??= '' - sets value to empty if undefined
+			document.getElementById('fName').value = data.firstName ??= '';
+			document.getElementById('lName').value = data.lastName;
+			document.getElementById('email').value = data.email;
+			document.getElementById('phone').value = data.phone ??= '';
+			document.getElementById('addr1').value = data.addressLine1;
+			document.getElementById('addr2').value = data.addressLine2 ??= '';
+			document.getElementById('city').value = data.city;
+			document.getElementById('state').value = data.state;
+			document.getElementById('postalCode').value = data.postalCode;
+			//
+			console.log({'populate form data' : data});
+			//
+			prepUpdate("customerList.html");
+			//
+			localStorage.removeItem('form-data');
+		}
+	}
+
+	//
+	//script loads after form so that querySelector("#customerform") works
+	//
+	// in querySelector, must use # for id ref
+	const dataForm = document.querySelector("#customerform");
+	if (dataForm != null) {
+		// call handleFormSubmit in formUtils.js 
+		dataForm.addEventListener("submit", handleFormSubmit);
+	} else {
+		alert('dataForm is null, cannot submit ');
+	}
+</script>
+
+</html>

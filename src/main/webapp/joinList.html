@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Join List</title>
+<link href="listTable.css" rel="stylesheet" />
+<link href="titleImg.css" rel="stylesheet" />
+
+</head>
+<body>
+	<header-component></header-component>
+
+	<div  class="table">
+		<div class="row">
+	        <div class="cell">
+
+				<div  class="table">
+					<div class="row">
+				        <div class="cell"><h3 id="topTitle" style="margin: 0;">Join List</h3></div>
+				    </div>    
+				    <div class="row">    
+				        <div class="cell"><h4 id="subTitle" style="margin: 0;">(...)</h4></div>
+			      </div>
+				</div>
+	        
+	        </div>
+
+	        <div class="cell"><img id="venn" src="images/innerjoin.png"/ alt="" /></div>
+
+	        <div class="lastcell">
+
+				<div  class="table">
+					<div class="row">
+				        <div class="lastcell"><h4 id="defineA" style="margin: 0;">Table.</h4></div>
+				    </div>    
+				    <div class="row">    
+				        <div class="lastcell"><h4 id="defineB" style="margin: 0;">Table.</h4></div>
+			      </div>
+				</div>
+	        
+	        </div>
+
+      </div>
+	</div>
+	<div  class="ctr">
+	<table id="pageTable" >
+		<thead>
+			<tr>
+				<th>...</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td colspan="4">Loading...</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+
+
+	<pager-component></pager-component>
+
+	<footer-component></footer-component>
+
+</body>
+
+<script src="components/header.js" type="text/javascript" defer></script>
+<script src="components/pager.js" type="text/javascript" defer></script>
+<script src="components/footer.js" type="text/javascript" defer></script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', refreshPage, false);
+//
+const restBaseUrl = window.location.origin + '/html5-jakarta-1.0/api/joins/';
+
+const joinTitles = ['Employee Id', 'Employee Email', 'Job title', 'Employee Last Name',   
+	'Customer Id', 'Customer Email', 'Customer Last Name'];
+const selfTitles = ['Employee Id', 'Employee Email', 'Job title', 'Employee Name', 
+	'Manager Name', 'Manager title', 'Manager Id'];
+const subTitles = new Map([
+		['InnerJoin', '(Employees who are Customers)'],
+		['LeftJoin', '(All Employees plus Customers who are Employees)'],
+		['RightJoin', '(All Customers plus Employees who are Customers)'],
+		['FullJoin', '(All Employees plus all Customers)'],
+		['LeftAntiJoin', '(Only Employees who are not Customers)'],
+		['RightAntiJoin', '(Only Customers who are not Employees)'],
+		['FullAntiJoin', '(Employees who are not Customers plus Customers who are not Employees)'],
+		['SelfJoin', '(Employees mapped to direct Manager)'],
+		['CrossJoin', '(Employee mapped to each Customer)']
+]);	
+
+async function refreshPage() {
+	//
+	url = restBaseUrl + 'page';
+  try {
+	  let joinData = JSON.parse(localStorage.getItem('joinData'));
+  	  console.log({'refreshPage joinData': joinData});
+  		const joinType = joinData.joinType;
+		const joinTitle = joinData.joinTitle;
+	    // pageInfo  defined in pager.js
+	    pageInfo = getPageInfo();
+	 	let joinPageInfo = { 'joinType' : joinType, 'pageInfo' : pageInfo};
+	 	console.log({'rest joinPageInfo': joinPageInfo});
+	 	//
+	 	let fetchOptions = postDataAsJson(joinPageInfo)
+		// get the data with POST request
+		
+	 	  //REST service url
+	 	  console.log({'rest url': url});
+		//
+	 	let resp = await fetch(url, fetchOptions);
+	 	if (!resp.ok) {
+	 	    const text = await resp.text();
+	 	    throw new Error(text);
+	 	}
+		//
+		let data = await resp.json();
+		let pageList = data.content;
+		let page = data.pageInfo;
+		// pageNum, pageSize, totalPages defined in pager.js
+		pageNum = page.pageNum;
+		pageSize = page.pageSize;
+		totalPages = page.totalPages;
+		console.log({'resp totalPages': totalPages});
+		//
+		renderTitles(joinTitle, joinType);
+		//
+		renderTable(joinType, pageList);
+		//
+		// call function in pager.js
+		updatePager();
+  	} catch (error) {
+	  console.log(error);
+	}
+}
+
+/**
+ * Create POST fetch options
+ *
+ * @param joinPageInfo instance
+ * @return fetchOptions
+ */
+function postDataAsJson(joinPageInfo) {
+    let dataJsonString = JSON.stringify(joinPageInfo);
+    console.log({'rest dataJsonString': dataJsonString});
+    //
+    const fetchOptions = {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Accept': 'application/json',
+          //  'Authorization': 'Basic ' + btoa(username + ":" + password),
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: dataJsonString
+    };
+    console.log({'fetchOptions': fetchOptions});
+    //
+    return fetchOptions;
+ }
+
+function renderTitles(joinTitle, joinType) {
+	  try {
+		// Select the table tbody
+		let topTitlePart = document.querySelector('#topTitle');
+		topTitlePart.innerHTML = joinTitle;
+		console.log({'renderTitles, joinTitle': joinTitle});
+		//
+		let subTitlePart = document.querySelector('#subTitle');
+		let subTitle = subTitles.get(joinType);
+		subTitlePart.innerHTML = subTitle;
+		console.log({'renderTitles, subTitle': subTitle});
+		//
+		let vennPart = document.querySelector('#venn');
+		vennPart.src = 'images/' + joinType.toLowerCase() + '.png';
+		// Select the table tbody
+	    let theadPart = document.querySelector('#pageTable thead');
+		//
+		let defineAPart = document.querySelector('#defineA');
+		let defineA = 'A : Employees';
+		defineAPart.innerHTML = defineA;
+		console.log({'renderTitles, subTitle': subTitle});
+		//
+		let defineBPart = document.querySelector('#defineB');
+		let defineB = 'B : Customers';
+		if(joinType === 'SelfJoin'){
+			defineB = "A' : Employee Managers";
+		}
+		defineBPart.innerHTML = defineB;
+		
+		//
+		let result = '';  
+		if("SelfJoin" === joinType){
+			result = createSelfTitles();
+		} else{
+			result = createJoinTitles();
+		}
+		theadPart.innerHTML = result;
+	  } catch (ex) {
+	      console.error(ex);
+	  }
+}
+
+/**
+ * Create table column titles
+ * 
+ * Note: joinTitles array must be defined externally
+ *
+ * @return row of html column titles
+ */
+function createJoinTitles() {
+	// create html
+	let titles = '';
+	joinTitles.forEach(t => {
+		// th must use style - white-space: pre-wrap;
+		// replace first occurrence of space with newline
+		let tWrap = t.replace(' ', '\n');
+		// titles - must use backtick 
+		titles += `<th>${tWrap}</th>\n`;
+	});
+	// result - must use backtick 
+	let result = `<tr>
+	${titles}
+	</tr>`;
+  return result;
+}
+
+/**
+ * Create table column titles
+ * 
+ * Note: selfTitles array must be defined externally
+ *
+ * @return row of html column titles
+ */
+function createSelfTitles() {
+	// create html
+	let titles = '';
+	selfTitles.forEach(t => {
+		// th must use style - white-space: pre-wrap;
+		// replace first occurrence of space with newline
+		let tWrap = t.replace(' ', '\n');
+		// titles - must use backtick 
+		titles += `<th>${tWrap}</th>\n`;
+	});
+	// result - must use backtick 
+	let result = `<tr>
+	${titles}
+	</tr>`;
+  return result;
+}
+
+
+function renderTable(joinType, pageList) {
+	  try {
+		  console.log({'renderTable, joinType': joinType});
+		// Select the table tbody
+	    let tbodyPart = document.querySelector('#pageTable tbody');
+	    let result = '';  
+		if("SelfJoin" === joinType){
+			result = createSelfJoinTable(pageList);
+		} else{
+			result = createJoinTable(pageList);
+		}
+		tbodyPart.innerHTML = result;
+	  } catch (ex) {
+	      console.error(ex);
+	  }
+}
+
+function createSelfJoinTable(pageList) {
+	// create html
+	let result = '';
+	try {
+		pageList.forEach(e => {
+			// note: ej will contain double quotes
+		   let ej = JSON.stringify(e);
+		// result - must use backtick 
+		   result += `<tr>
+		   <td>${e.directReport.id}</td>
+		   <td>${e.directReport.email}</td>
+		   <td>${e.directReport.jobTitle}</td>
+		   <td>${e.directReportName}</td>
+		   <td>${e.managerName}</td>
+		   <td>${e.manager.jobTitle}</td>
+		   <td>${e.manager.id}</td>
+		   </tr>`;
+		});
+	  } catch (ex) {
+	      console.error(ex);
+	  }
+	  return result;
+}
+function createJoinTable(pageList) {
+	// create html
+	let result = '';
+	try {
+		// use value ?? null to convert undefined value to null
+		pageList.forEach(e => {
+			// note: ej will contain double quotes
+		   let ej = JSON.stringify(e);
+		// result - must use backtick 
+		   result += `<tr>
+		   <td>${e.empid}</td>
+		   <td>${e.empEmail  ?? null}</td>
+		   <td>${e.jobTitle ?? null}</td>
+		   <td>${e.empLastName ?? null}</td>
+		   <td>${e.custid}</td>
+		   <td>${e.custEmail ?? null}</td>
+		   <td>${e.custLastName ?? null}</td>
+		   </tr>`;
+		});
+	  } catch (ex) {
+	      console.error(ex);
+	  }
+	  return result;
+}
+
+</script>
+
+<script>
+// begin pager functions 
+
+function pageHandler(event){
+  pageInfo = event.detail;
+  loadPage(pageInfo);
+}
+
+async function loadPage(pageInfo){
+   console.log( {'loadPage' : pageInfo}  );
+   // use fetch to send page request to server and receive
+   // response with one page of data, plus updated page info
+	const refreshResponse = await refreshPage();
+//	console.log({'refreshResponse': refreshResponse});
+}
+
+document.addEventListener('custom:updatePage', pageHandler);
+
+// end pager functions
+</script>
+
+
+</html>
