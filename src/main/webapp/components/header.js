@@ -1,7 +1,4 @@
 
-let LB = encodeURIComponent( '{' );
-let RB = encodeURIComponent( '}' );
-
 const headerTemplate = document.createElement('template');
 
 headerTemplate.innerHTML = `
@@ -94,10 +91,6 @@ function join(el){
   let joinType = el.id;
   let title = el.innerText;
 	console.log({'joinType': joinType, 'join title': title});
-	// need to encode for special characters, { and }, within the title
-	//let ec = encodeURIComponent(title);
-	//let h = "joinList.html?joinType=" + joinType + "&joinTitle=" + ec;
-	//window.location.href = h;
 	//
 	let join = {
 		'joinType' : joinType,

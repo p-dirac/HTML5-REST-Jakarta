@@ -4,18 +4,13 @@ footerTemplate.innerHTML = `
 
 
       <style>
-      .center {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
         footer {
 			font-size: 1.2rem;
 			/* top right bottom left */
           padding: 4px 4px 4px 4px;
           list-style: none;
           display: flex;
-          justify-content: space-between;
+          justify-content: center;
           align-items: center;
           background-color: Turquoise;
         }
@@ -46,7 +41,7 @@ footerTemplate.innerHTML = `
         
         
       </style>
-      <footer class="center">
+      <footer>
         <ul>
           <li><a href="about.html">About</a></li>
           <li><a href="docs.html">Docs</a></li>
