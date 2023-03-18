@@ -8,4 +8,4 @@ Sample data is stored with the MySql database and accessed with JDBC queries.
 
 See HTML5-REST-Jakarta-Overview.pdf for more information. This project is free and open source.
 
-Keywords: HTML5, Javascript, web components, fetch, REST, json, Jakarta, mysql, JDBC, join
+Keywords: HTML5, Javascript, web components, fetch, REST, json, Jakarta, mysql, JDBC, join, open source
